@@ -132,14 +132,63 @@ app.get("/api/jobs/:id", async (req, res) => {
     res.send(jobs);
 });
 
-app.get("/api/jobs/:id/remaining", async (req, res) => {
+app.get("/api/jobs/:id/facility", async (req, res) => {
     const { id } = req.params;
     const jobs = await sequelize.query("SELECT job_id, facility_id, total_number_nurses_needed, nurse_type_needed FROM jobs WHERE job_id = :id", {
         replacements: { id },
         type: sequelize.QueryTypes.SELECT,
     });
-    res.send(jobs);
+
+    const facility = await sequelize.query("SELECT facility_id, facility_name FROM facilities WHERE facility_id = :id", {
+        replacements: { id: jobs[0].facility_id },
+        type: sequelize.QueryTypes.SELECT,
+    });
+
+    res.send(facility);
 });
+
+app.get("/api/jobs/:id/nurses", async (req, res) => {
+    const { id } = req.params;
+    const jobs = await sequelize.query("SELECT job_id, facility_id, total_number_nurses_needed, nurse_type_needed FROM jobs WHERE job_id = :id", {
+        replacements: { id },
+        type: sequelize.QueryTypes.SELECT,
+    });
+
+    const nurses = await sequelize.query("SELECT nurse_id, worked_shift, call_out, no_call_no_show FROM clinician_work_history WHERE facility_id = :id", {
+        replacements: { id: jobs[0].facility_id },
+        type: sequelize.QueryTypes.SELECT,
+    });
+
+    priorityScore = [
+        {
+            score: 0,
+        }
+    ]
+
+    nurses.forEach(nurse => {
+        if (nurse.worked_shift) {
+            priorityScore.map((item) => {
+                item.score += 1
+            })
+        }
+        if (nurse.call_out) {
+            priorityScore.map((item) => {
+                item.score -= 3
+            })
+        }
+        if (nurse.no_call_no_show) {
+            priorityScore.map((item) => {
+                item.score -= 5
+            })
+        }
+
+    });
+
+    res.send(nurses.concat(priorityScore));
+
+});
+
+
 
 
 app.get("/api/nurses", async (req, res) => {
@@ -159,8 +208,23 @@ app.get("/api/nurses/:id", async (req, res) => {
     res.send(nurses);
 });
 
+app.get("/api/nurses/:id/jobs", async (req, res) => {
+    const { id } = req.params;
+    const jobs = await sequelize.query("SELECT job_id, facility_id, total_number_nurses_needed, nurse_type_needed FROM jobs WHERE nurse_type_needed = (SELECT nurse_type FROM nurses WHERE nurse_id = :id)", {
+        replacements: { id },
+        type: sequelize.QueryTypes.SELECT,
+    });
+    res.send(jobs);
+});
 
-
+app.get("/api/nurses/:id/jobs/:job_id", async (req, res) => {
+    const { id, job_id } = req.params;
+    const jobs = await sequelize.query("SELECT job_id, facility_id, total_number_nurses_needed, nurse_type_needed FROM jobs WHERE nurse_type_needed = (SELECT nurse_type FROM nurses WHERE nurse_id = :id) AND job_id = :job_id", {
+        replacements: { id, job_id },
+        type: sequelize.QueryTypes.SELECT,
+    });
+    res.send(jobs);
+});
 
 
 app.get("/api/facilities/:id/nurses/:nurse_id/shifts", async (req, res) => {
