@@ -4,9 +4,8 @@ import queryContext from './queryContext';
 import queryReducer from './queryReducer';
 import { 
     NURSES,
-    NURSES_JOBS,
     JOBS,
-    HIRED_JOBS,
+    FACILITY,
     CLEAN_FACILITY
 } from '../../type';
 
@@ -16,9 +15,8 @@ const QueryState = props => {
 
     const initialState = {
         nurses: [],
-        nursesJobs: [],
         jobs: [],
-        hiredJobs: []
+        facility: [],
     }
 
 
@@ -28,7 +26,7 @@ const QueryState = props => {
     // Obtener los proyectos
     const getNurses = async () => {
         try {
-            const resultado = await axios.get("http://localhost:3001/api/nurses");
+            const resultado = await axios.get("http://localhost:3001/api/jobs/remaining");
             dispatch({
                 type: NURSES,
                 payload: resultado.data
@@ -38,22 +36,9 @@ const QueryState = props => {
         }
     }
 
-    const getNursesJobs = async (id) => {
-        try {
-            const resultado = await axios.get(`http://localhost:3001/api/nurses/${id}/jobs`);
-            dispatch({
-                type: NURSES_JOBS,
-                payload: resultado.data
-            })
-
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
     const getJobs = async () => {
         try {
-            const resultado = await axios.get("http://localhost:3001/api/jobs");
+            const resultado = await axios.get("http://localhost:3001/api/nurses/jobs");
             dispatch({
                 type: JOBS,
                 payload: resultado.data
@@ -63,41 +48,28 @@ const QueryState = props => {
         }
     }
 
-    const getNurseHiredJobs = async (id) => {
+    const getFacility = async () => {
         try {
-            const resultado = await axios.get(`http://localhost:3001/api/jobs/${id}/nurse_hired_jobs`);
+            const resultado = await axios.get("http://localhost:3001/api/max/facilities");
             dispatch({
-                type: HIRED_JOBS,
+                type: FACILITY,
                 payload: resultado.data
             })
-
         } catch (error) {
             console.log(error);
         }
     }
-
-    
-    const cleanNursesJobs = () => {
-        dispatch({
-            type: CLEAN_FACILITY,
-            payload: []
-        })
-    }
-
 
 
     return (
         <queryContext.Provider
             value={{
                 nurses: state.nurses,
-                nursesJobs: state.nursesJobs,
                 jobs: state.jobs,
-                hiredJobs: state.hiredJobs,
+                facility: state.facility,
                 getNurses,
-                getNursesJobs,
                 getJobs,
-                getNurseHiredJobs,
-                cleanNursesJobs,
+                getFacility,
             }}
         >
             {props.children}

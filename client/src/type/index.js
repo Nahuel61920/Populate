@@ -7,6 +7,5 @@ export const CLEAN_FACILITY = 'CLEAN_FACILITY';
 // Query types
 
 export const NURSES = 'NURSES';
-export const NURSES_JOBS = 'NURSES_JOBS';
 export const JOBS = 'JOBS';
-export const HIRED_JOBS = 'HIRED_JOBS';
+export const FACILITY = 'FACILITY';

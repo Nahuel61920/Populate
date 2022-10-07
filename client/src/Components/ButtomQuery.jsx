@@ -4,59 +4,31 @@ import queryContext from "../context/query/queryContext";
 function ButtomQuery() {
 
     const queryContexto = useContext(queryContext);
-    const { nurses, nursesJobs, jobs, hiredJobs,  getNurses, getNursesJobs, getJobs, getNurseHiredJobs, cleanNursesJobs} = queryContexto;
-
-    
-
-    function callJobs() {
-        jobs.map((job) => {
-            getNurseHiredJobs(job.job_id);
-        });
-    }
-
-    function callNursesJobs() {
-        nurses.map((nurse) => (
-            getNursesJobs(nurse.nurse_id)
-        ));
-    }
-
-
+    const { nurses, jobs, facility, getFacility, getNurses, getJobs} = queryContexto;
 
     useEffect(() => {
         getNurses();
-        getJobs()
+        getJobs();
+        getFacility();
     }, []);
 
     const handleQ4 = () => {
-        callJobs();
-        cleanNursesJobs();
+        console.log("Execute Q4 Query", nurses);
     };
 
     const handleQ5 = () => {
-        callNursesJobs();
-        cleanNursesJobs();
+        console.log("Execute Q5 Query", jobs);
     };
 
-
+    const handleQ6 = () => {
+        console.log("Execute Q6 Query", facility);
+    };
     
-
-    setTimeout(() => {
-        if(hiredJobs.length === jobs.length && hiredJobs.length !== 0){
-            console.log("Execute Q4 Query", hiredJobs);
-        }
-    }, 100);
-
-    setTimeout(() => {
-        if(nursesJobs.length === nurses.length && nursesJobs.length !== 0){
-            console.log("Execute Q5 Query", nursesJobs);
-        }
-    }, 100);
-
     return (
         <div>
             <button onClick={handleQ4}>Execute Q4 Query</button>
             <button onClick={handleQ5}>Execute Q5 Query</button>
-            <button>Execute Q6 Query</button>
+            <button onClick={handleQ6}>Execute Q6 Query</button>
         </div>
     );
 }
