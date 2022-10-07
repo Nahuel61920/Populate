@@ -37,7 +37,6 @@ const FacilitiesState = props => {
     const getFacility = async (id, numser) => {
         try {
             const resultado = await axios.get(`http://localhost:3001/api/facilities/${id}/nurses/${numser}/priority`);
-            console.log(resultado.data);
             dispatch({
                 type: FACILITY_ID,
                 payload: resultado.data
@@ -54,9 +53,6 @@ const FacilitiesState = props => {
             payload: []
         })
     }
-
-    
-    console.log(state.facilityID);
 
 
 

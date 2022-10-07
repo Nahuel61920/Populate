@@ -5,12 +5,15 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 import FacilitiesState from "./context/facilities/facilitiesState";
+import QueryState from "./context/query/queryState";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-    <FacilitiesState>
+  <FacilitiesState>
+    <QueryState>
       <App />
-    </FacilitiesState>
+    </QueryState>
+  </FacilitiesState>
 );
 
 // If you want to start measuring performance in your app, pass a function

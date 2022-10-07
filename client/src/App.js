@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./App.css";
+import ButtomQuery from "./Components/ButtomQuery";
 import Score from "./Components/Score";
 import facilitiesContext from "./context/facilities/facilitiesContext";
 
@@ -40,6 +41,7 @@ function App() {
         <button onClick={(e) => onSubmit(e)}>Submit</button>
       </div>
       <Score/>
+      <ButtomQuery/>
     </div>
   );
 }
